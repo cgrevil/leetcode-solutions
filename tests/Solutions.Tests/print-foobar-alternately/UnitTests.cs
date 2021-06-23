@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -10,119 +7,52 @@ namespace Solutions.print_foobar_alternately
 
     public class UnitTests
     {
-        [Fact]
-        public void FooBar_WhenNIs1AndBarFooIsCalled_PrintsFooBarOnce()
+        [Theory]
+        [InlineData(1, true)]
+        [InlineData(1, false)]
+        [InlineData(2, true)]
+        [InlineData(2, false)]
+        [InlineData(100, true)]
+        [InlineData(100, false)]
+        public async Task FooBarPrintsCorrectlyWhenCalledFromMultipleThreadsTheory(int n, bool isFooThreadStartedFirst)
         {
             // Arrange
-            string print = "";
-            var foobar = new FooBar(1);
+            string printed = "";
+            var foobar = new FooBar(n);
+
+            Action printBar = () => printed += "bar";
+            Action printFoo = () => printed += "foo";
 
             // Act
-            foobar.Bar(() => print += "bar");
-            foobar.Foo(() => print += "foo");
+            Task fooThread;
+            Task barThread;
+            
+            if (isFooThreadStartedFirst)
+            {
+                fooThread = Task.Factory.StartNew(() => foobar.Foo(printFoo));
+                await Task.Delay(10);
+                barThread = Task.Factory.StartNew(() => foobar.Bar(printBar));
+            }
+            else
+            {
+                barThread = Task.Factory.StartNew(() => foobar.Bar(printBar));
+                await Task.Delay(10);
+                fooThread = Task.Factory.StartNew(() => foobar.Foo(printFoo));
+            }
+
+            await Task.WhenAll(new[]
+            {
+                fooThread,
+                barThread,
+            });
 
             // Assert
-            Assert.Equal("foobar", print);
-        }
-
-        [Fact]
-        public void FooBar_WhenNIs1AndFooBarIsCalled_PrintsFooBarOnce()
-        {
-            // Arrange
-            string print = "";
-            var foobar = new FooBar(1);
-
-            // Act
-            foobar.Foo(() => print += "foo");
-            foobar.Bar(() => print += "bar");
-
-            // Assert
-            Assert.Equal("foobar", print);
-        }
-
-        [Fact]
-        public void FooBar_WhenNIs2AndBarFooBarFooIsCalled_PrintsFooBarTwice()
-        {
-            // Arrange
-            string print = "";
-            var foobar = new FooBar(1);
-
-            // Act
-            foobar.Bar(() => print += "bar");
-            foobar.Foo(() => print += "foo");
-            foobar.Bar(() => print += "bar");
-            foobar.Foo(() => print += "foo");
-
-            // Assert
-            Assert.Equal("foobarfoobar", print);
-        }
-
-        [Fact]
-        public void FooBar_WhenNIs2AndFooBarBarFooIsCalled_PrintsFooBarTwice()
-        {
-            // Arrange
-            string print = "";
-            var foobar = new FooBar(1);
-
-            // Act
-            foobar.Foo(() => print += "foo");
-            foobar.Bar(() => print += "bar");
-            foobar.Bar(() => print += "bar");
-            foobar.Foo(() => print += "foo");
-
-            // Assert
-            Assert.Equal("foobarfoobar", print);
-        }
-
-        [Fact]
-        public void FooBar_WhenNIs2AndFooFooBarBarIsCalled_PrintsFooBarTwice()
-        {
-            // Arrange
-            string print = "";
-            var foobar = new FooBar(1);
-
-            // Act
-            foobar.Foo(() => print += "foo");
-            foobar.Foo(() => print += "foo");
-            foobar.Bar(() => print += "bar");
-            foobar.Bar(() => print += "bar");
-
-            // Assert
-            Assert.Equal("foobarfoobar", print);
-        }
-
-        [Fact]
-        public void FooBar_WhenNIs2AndFooBarFooBarIsCalled_PrintsFooBarTwice()
-        {
-            // Arrange
-            string print = "";
-            var foobar = new FooBar(1);
-
-            // Act
-            foobar.Foo(() => print += "foo");
-            foobar.Foo(() => print += "foo");
-            foobar.Bar(() => print += "bar");
-            foobar.Bar(() => print += "bar");
-
-            // Assert
-            Assert.Equal("foobarfoobar", print);
-        }
-
-        [Fact]
-        public void FooBar_WhenNIs2AndBarFooFooBarIsCalled_PrintsFooBarTwice()
-        {
-            // Arrange
-            string print = "";
-            var foobar = new FooBar(1);
-
-            // Act
-            foobar.Bar(() => print += "bar");
-            foobar.Foo(() => print += "foo");
-            foobar.Foo(() => print += "foo");
-            foobar.Bar(() => print += "bar");
-
-            // Assert
-            Assert.Equal("foobarfoobar", print);
+            string expected = "";
+            for (int i = 0; i < n; i++)
+            {
+                expected += "foobar";
+            }
+            Assert.Equal(expected, printed);
         }
     }
 }
