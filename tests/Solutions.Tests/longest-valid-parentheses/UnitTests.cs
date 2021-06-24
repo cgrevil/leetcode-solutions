@@ -8,6 +8,7 @@ namespace Solutions.longest_valid_parentheses
         [InlineData("(()", 2)]
         [InlineData(")()())", 4)]
         [InlineData("", 0)]
+        [InlineData("()(()", 2)]
         public void SolutionReturnsLengthOfLongestValidParenthesesString(string s, int expectedOutput)
         {
             // Arrange
