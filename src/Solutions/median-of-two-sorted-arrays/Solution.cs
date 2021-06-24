@@ -1,9 +1,9 @@
-﻿namespace Solutions.median_of_two_sorted_arrays
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
+namespace Solutions.median_of_two_sorted_arrays
+{
     /// <summary>
     /// https://leetcode.com/problems/median-of-two-sorted-arrays/
     /// </summary>
@@ -23,7 +23,7 @@
             int leftPartitionSize = (nums1.Length + nums2.Length - 1) / 2;
             int from1Min = Math.Max(0, leftPartitionSize - nums2.Length);
             int from1Max = Math.Min(nums1.Length, leftPartitionSize);
-            
+
             int from1 = FindLeftMedianPartitionRecursive(leftPartitionSize, from1Min, from1Max, nums1, nums2);
             int from2 = leftPartitionSize - from1;
 
@@ -51,7 +51,7 @@
             if (nums.Length == 0)
                 return 0;
 
-            if(nums.Length % 2 == 0)
+            if (nums.Length % 2 == 0)
             {
                 int a = nums[nums.Length / 2 - 1];
                 int b = nums[nums.Length / 2];
@@ -79,7 +79,7 @@
                 // Recursive step: Binary search for valid partition
                 return FindLeftMedianPartitionRecursive(leftPartitionSize, from1Min, from1 - 1, nums1, nums2);
             }
-            if(tooFewFrom1)
+            if (tooFewFrom1)
             {
                 // Recursive step: Binary search for valid partition
                 return FindLeftMedianPartitionRecursive(leftPartitionSize, from1 + 1, from1Max, nums1, nums2);
