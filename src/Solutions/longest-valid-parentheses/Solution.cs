@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Solutions.longest_valid_parentheses
 {
@@ -6,28 +7,27 @@ namespace Solutions.longest_valid_parentheses
     {
         public int LongestValidParentheses(string s)
         {
-            int longest = 0;
+            bool[] charValidations = new bool[s.Length];
+            Stack<int> openLefts = new Stack<int>();
 
-            int currentLength = 0;
-            int currentDepth = 0;
-
-            foreach (char c in s)
+            for (int i = 0; i < s.Length; i++)
             {
+                char c = s[i];
+
                 if (c == '(')
                 {
-                    currentDepth++;
+                    openLefts.Push(i);
                 }
                 else if (c == ')')
                 {
-                    if (currentDepth == 0)
+                    if (openLefts.Count == 0)
                     {
-                        currentLength = 0;
                         continue;
                     }
 
-                    currentDepth--;
-                    currentLength += 2;
-                    longest = Math.Max(longest, currentLength);
+                    int left = openLefts.Pop();
+                    charValidations[left] = true;
+                    charValidations[i] = true;
                 }
                 else
                 {
@@ -35,7 +35,22 @@ namespace Solutions.longest_valid_parentheses
                 }
             }
 
-            return longest;
+            int longest = 0;
+            int current = 0;
+            foreach (bool charIsValid in charValidations)
+            {
+                if (charIsValid)
+                {
+                    current++;
+                }
+                else
+                {
+                    longest = Math.Max(longest, current);
+                    current = 0;
+                }
+            }
+
+            return Math.Max(longest, current);
         }
     }
 }
