@@ -3,6 +3,9 @@ using System.Threading;
 
 namespace Solutions.print_foobar_alternately
 {
+    /// <summary>
+    /// https://leetcode.com/problems/print_foobar_alternately/
+    /// </summary>
     public class FooBar
     {
         private int n;

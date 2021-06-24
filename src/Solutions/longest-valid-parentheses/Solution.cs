@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Solutions.longest_valid_parentheses
 {
+    /// <summary>
+    /// https://leetcode.com/problems/longest_valid_parentheses/
+    /// </summary>
     public class Solution
     {
         public int LongestValidParentheses(string s)
