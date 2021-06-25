@@ -11,14 +11,6 @@ namespace Solutions.median_of_two_sorted_arrays
     {
         public double FindMedianSortedArrays(int[] nums1, int[] nums2)
         {
-            // Edgecase 1a: No elements in nums1
-            if (nums1.Length == 0)
-                return FindMedianSortedArray(nums2);
-
-            // Edgecase 1b: No elements in nums2
-            if (nums2.Length == 0)
-                return FindMedianSortedArray(nums1);
-
             // To find the median we can partition the combined array into left, middle, and right, where left and right are of same size, and middle is 1 or 2 elements. Since the two arrays are sorted, the left partition must consist of a) zero or more elements from the beginning of nums1 together, and b) zero or more from beginning of nums2. Our strategy is to find the number of elements in the left partition that comes from nums1. Then we can calculate the median in constant time.
             int leftPartitionSize = (nums1.Length + nums2.Length - 1) / 2;
             int from1Min = Math.Max(0, leftPartitionSize - nums2.Length);
@@ -44,21 +36,6 @@ namespace Solutions.median_of_two_sorted_arrays
                 candidates.Sort();
                 return candidates.First();
             }
-        }
-
-        private double FindMedianSortedArray(int[] nums)
-        {
-            if (nums.Length == 0)
-                return 0;
-
-            if (nums.Length % 2 == 0)
-            {
-                int a = nums[nums.Length / 2 - 1];
-                int b = nums[nums.Length / 2];
-                return (a + b) / 2.0;
-            }
-
-            return nums[nums.Length / 2];
         }
 
         private int FindLeftMedianPartitionRecursive(int leftPartitionSize, int from1Min, int from1Max, int[] nums1, int[] nums2)
